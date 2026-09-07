@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+<key>CFBundleExecutable</key><string>MyMemoGuided</string>
+<key>CFBundleIdentifier</key><string>com.zhongtw.MyMemo.Guided</string>
+<key>CFBundleName</key><string>MyMemo 引导版</string>
+<key>CFBundleDisplayName</key><string>MyMemo 引导版</string>
+<key>CFBundlePackageType</key><string>APPL</string>
+<key>CFBundleShortVersionString</key><string>0.2.2</string>
+<key>CFBundleVersion</key><string>3</string>
+<key>CFBundleIconFile</key><string>AppIcon</string>
+<key>LSMinimumSystemVersion</key><string>26.0</string>
+<key>NSPrincipalClass</key><string>NSApplication</string>
+<key>NSHighResolutionCapable</key><true/>
+<key>NSSpeechRecognitionUsageDescription</key><string>将你导入的录音在本机转换成文字。</string>
+<key>NSHumanReadableCopyright</key><string>作者：钟天炜｜联系方式：微信 zhongtw</string>
+</dict></plist>

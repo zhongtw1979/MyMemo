@@ -1,0 +1,47 @@
+name: macOS build and tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: macos-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: macos-26
+    timeout-minutes: 20
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Show toolchain
+        run: |
+          sw_vers
+          xcrun swift --version
+          xcodebuild -version
+      - name: Ensure optional media tools are available for tests
+        run: |
+          if ! command -v ffprobe >/dev/null 2>&1; then
+            brew install ffmpeg
+          fi
+      - name: Run tests
+        run: bash scripts/swift.sh test
+      - name: Build preview app
+        run: bash scripts/build-app.sh
+      - name: Store preview artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: MyMemo-macOS-preview
+          path: |
+            dist/*.zip
+            dist/SHA256SUMS
+          if-no-files-found: error
+          retention-days: 7
