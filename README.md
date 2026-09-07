@@ -8,6 +8,8 @@ MyMemo is a native macOS app for importing recordings from selected devices, det
 
 当前版本为 **0.2.2 开发者预览版**。面向 Apple Silicon（M 系列）Mac，最低要求 **macOS 26**。请先阅读下方的运行要求和已知限制。
 
+[下载开发者预览包](https://github.com/zhongtw1979/MyMemo/releases/tag/v0.2.2) · [查看构建与测试](https://github.com/zhongtw1979/MyMemo/actions/workflows/macos.yml)
+
 ## 能做什么
 
 - 三步引导：选择设备、选择保存位置、确认是否生成文字。
