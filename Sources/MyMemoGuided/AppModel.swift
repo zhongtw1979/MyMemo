@@ -28,6 +28,8 @@ final class AppModel: ObservableObject {
     @Published var selectedID: UUID?
     @Published var loginEnabled = false
     @Published var lastImport: ImportResult?
+    @Published var loadingLibrary = true
+    let transcriptReader = TranscriptReader()
 
     let dataDirectory: URL
     let configURL: URL
@@ -51,13 +53,21 @@ final class AppModel: ObservableObject {
         let args = CommandLine.arguments
         if let i = args.firstIndex(of: "--data-dir"), args.count > i + 1 {
             dataDirectory = URL(fileURLWithPath: args[i + 1])
-        } else { dataDirectory = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Library/Application Support/MyMemoGuided") }
+        } else {
+            let classic = Bundle.main.object(forInfoDictionaryKey: "MyMemoDataProfile") as? String == "classic"
+            dataDirectory = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Library/Application Support/" + (classic ? "MyMemo" : "MyMemoGuided"))
+        }
         configURL = dataDirectory.appendingPathComponent("config.json")
         preferencesURL = dataDirectory.appendingPathComponent("experience.json")
         do {
             configuration = try AppConfiguration.load(from: configURL)
             preferences = try GuidedPreferences.load(from: preferencesURL)
-            library = try RecordingLibrary(stateURL: dataDirectory.appendingPathComponent("library.json"))
+            if Bundle.main.object(forInfoDictionaryKey: "MyMemoDataProfile") as? String == "classic",
+               !FileManager.default.fileExists(atPath: preferencesURL.path),
+               !configuration.destinationPath.isEmpty {
+                preferences.completed = true; preferences.paused = true
+                section = "library"
+            }
             paused = preferences.paused || args.contains("--paused")
             showSetup = !preferences.completed
             seedDraft()
@@ -70,10 +80,16 @@ final class AppModel: ObservableObject {
         monitor.onChange = { [weak self] in self?.refreshVolumes() }
         monitor.start(); refreshVolumes()
         Task {
-            if preferences.completed {
-                do { try await library?.auditMedia() } catch { startupError = error.localizedDescription }
+            do {
+                let stateURL = dataDirectory.appendingPathComponent("library.json")
+                library = try await Task.detached(priority: .userInitiated) { try RecordingLibrary(stateURL: stateURL) }.value
+                await refresh(); loadingLibrary = false
+                // Media validation still runs before import and transcription.
+                // Browsing saved text must not wait for a scan of every audio file.
+                await checkSpeech()
+            } catch {
+                startupError = error.localizedDescription; loadingLibrary = false
             }
-            await refresh(); await checkSpeech()
             validatingMedia = false; kickWorker()
         }
     }

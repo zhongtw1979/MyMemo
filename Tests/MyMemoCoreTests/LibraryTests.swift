@@ -110,6 +110,17 @@ final class LibraryTests: XCTestCase {
         XCTAssertEqual(try Data(contentsOf: state), corrupt)
     }
 
+    func testOpeningCompletedLibraryDoesNotRewriteState() async throws {
+        _ = try file("one.wav", "recording")
+        let store = try library()
+        _ = try await store.importDirectory(source, deviceName: "REC", destination: destination)
+        let stamp = Date(timeIntervalSince1970: 1_600_000_000)
+        try FileManager.default.setAttributes([.modificationDate: stamp], ofItemAtPath: state.path)
+        _ = try library()
+        let after = try FileManager.default.attributesOfItem(atPath: state.path)[.modificationDate] as? Date
+        XCTAssertEqual(after, stamp)
+    }
+
     func testExclusiveStoreRejectsSecondWriter() throws {
         let first = try RecordingLibrary(stateURL: state, exclusiveAccess: true)
         try withExtendedLifetime(first) {

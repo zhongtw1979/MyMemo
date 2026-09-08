@@ -13,7 +13,7 @@ public enum JobStatus: String, Codable, Sendable {
     }
 }
 
-public struct RecordingJob: Codable, Identifiable, Sendable {
+public struct RecordingJob: Codable, Identifiable, Sendable, Equatable {
     public var id: UUID = UUID()
     public var contentHash: String
     public var originalName: String

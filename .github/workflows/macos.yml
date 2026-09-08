@@ -35,7 +35,9 @@ jobs:
       - name: Run tests
         run: bash scripts/swift.sh test
       - name: Build preview app
-        run: bash scripts/build-app.sh
+        run: |
+          bash scripts/build-app.sh
+          bash scripts/build-app.sh --classic
       - name: Store preview artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:

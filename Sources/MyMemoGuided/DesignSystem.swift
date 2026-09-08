@@ -64,7 +64,7 @@ struct BrandMark: View {
                 .frame(width: 44, height: 44).background(MemoStyle.green.gradient, in: RoundedRectangle(cornerRadius: 13))
             VStack(alignment: .leading, spacing: 3) {
                 Text("MyMemo").font(.system(size: 21, weight: .bold, design: .rounded))
-                Text(compact ? "引导版" : "让录音整理更省心").font(.caption).foregroundStyle(.secondary)
+                Text(compact ? "录音整理" : "让录音整理更省心").font(.caption).foregroundStyle(.secondary)
             }
         }
     }

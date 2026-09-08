@@ -67,7 +67,7 @@ struct OnboardingView: View {
             }.font(.caption).foregroundStyle(MemoStyle.green)
             Divider().padding(.top, 20)
             AuthorInfoView().padding(.top, 12)
-            Text("MyMemo 引导版 · 0.2.2").font(.system(size: 10)).foregroundStyle(.tertiary).padding(.top, 12)
+            Text("MyMemo · 0.3.0").font(.system(size: 10)).foregroundStyle(.tertiary).padding(.top, 12)
         }.padding(28).frame(width: 258, alignment: .leading).frame(maxHeight: .infinity)
             .background(MemoStyle.pale.opacity(0.72))
     }

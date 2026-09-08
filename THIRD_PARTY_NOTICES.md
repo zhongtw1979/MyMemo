@@ -2,6 +2,7 @@
 
 - SwiftUI、AppKit、AVFoundation、Speech、CryptoKit、ServiceManagement 等是 Apple 系统框架。它们由目标系统或开发工具提供，不作为本项目源码重新授权。
 - Apple 语音模型由系统服务管理，不包含在仓库或应用包中。
+- 正文搜索使用 macOS 提供的 SQLite，不捆绑第三方数据库二进制文件；搜索缓存只保存在本机。
 - FFmpeg / FFprobe 是用户可选安装的外部工具，不与本项目捆绑发布。其许可取决于用户安装的构建版本。
 - 云端转写脚本为可选外部程序，不随本仓库提供，使用者需确认其许可、服务条款和凭据配置。
 - App 图标由项目中的 `scripts/create-icon.swift` 绘制。界面通过系统 API 使用 SF Symbols，不分发 SF Symbols 字体或资源包。

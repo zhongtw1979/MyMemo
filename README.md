@@ -6,9 +6,9 @@ MyMemo is a native macOS app for importing recordings from selected devices, det
 
 作者：**钟天炜** · 联系方式：**微信 zhongtw**
 
-当前版本为 **0.2.2 开发者预览版**。面向 Apple Silicon（M 系列）Mac，最低要求 **macOS 26**。请先阅读下方的运行要求和已知限制。
+当前版本为 **0.3.0 开发者预览版**。面向 Apple Silicon（M 系列）Mac，最低要求 **macOS 26**。请先阅读下方的运行要求和已知限制。
 
-[下载开发者预览包](https://github.com/zhongtw1979/MyMemo/releases/tag/v0.2.2) · [查看构建与测试](https://github.com/zhongtw1979/MyMemo/actions/workflows/macos.yml)
+[下载开发者预览包](https://github.com/zhongtw1979/MyMemo/releases) · [查看构建与测试](https://github.com/zhongtw1979/MyMemo/actions/workflows/macos.yml)
 
 ## 能做什么
 
@@ -19,6 +19,9 @@ MyMemo is a native macOS app for importing recordings from selected devices, det
 - 再次接入时快速检查新增或变化的文件，避免重复复制和转写。
 - 使用 Apple SpeechAnalyzer 在本机转写，输出 TXT 和 Markdown。
 - 查看录音、搜索、打开文字稿、暂停处理和重试失败任务。
+- 清单支持列标题排序及排序菜单，可按名称、导入时间、大小、设备和状态排序。
+- 搜索文件名、设备和文字稿正文，支持中文短词；正文索引保存在本机，首次按需建立。
+- 文字稿采用后台读取、限量缓存和 Mac 原生文本控件；支持关键词高亮、刷新、复制全文和 Markdown 回退。
 - 菜单栏后台运行，登录启动由用户主动开启。
 
 ## 开始使用
@@ -41,6 +44,14 @@ bash scripts/build-app.sh
 ```
 
 构建产物位于 `dist/`。将完整 `.app` 放入“应用程序”文件夹后打开。
+
+此前使用原工具版、录音库位于 `~/Library/Application Support/MyMemo/` 的用户，可以构建兼容升级包：
+
+```bash
+bash scripts/build-app.sh --classic
+```
+
+该包继续使用工具版原来的录音记录和文件位置。请退出旧 MyMemo 后再打开升级包；旧 App 可以保留。兼容包第一次打开已有库时默认暂停自动整理，方便核对记录。普通引导版继续使用独立的 `MyMemoGuided` 数据目录。
 
 构建脚本会将源码复制到系统临时目录中编译，避免 iCloud 同步目录中的文件时间变化干扰构建。构建缓存位置记录在本地 `.build-location`，不会提交到仓库。
 
@@ -67,9 +78,13 @@ bash scripts/build-app.sh
   config.json       # 设备和转写设置
   experience.json   # 引导状态与暂停状态
   library.json      # 导入历史、转写状态和增量索引
+  browser.json      # 清单排序偏好
+  transcript-search.sqlite3  # 本机正文搜索缓存
 ```
 
 录音和文字稿保存在用户选择的文件夹中。复制 App 不会自动迁移配置、历史或模型。程序不删除录音设备上的源文件；记录损坏时会停止处理，避免静默丢失历史。
+
+正文搜索缓存包含文字稿内容，只存储在相应的本机数据目录。它可以重新建立，不修改原文字稿。首次搜索会显示索引进度；外部编辑后可使用“刷新正文索引”。当前预览单篇最多载入 2 MiB，超出时明确提示打开原文件；正文索引单篇上限为 32 MiB，无法读取或超限的文件会计入未索引数量。
 
 默认使用本机识别。高级设置保留火山引擎外部脚本适配接口，默认未启用，脚本不随本仓库提供。启用时需要用户明确允许上传录音，并自行配置服务与凭据，参见 [外部转写接口](docs/external-transcription.md)。
 
@@ -86,13 +101,13 @@ bash scripts/build-app.sh
 
 ```text
 Sources/MyMemoCore/          媒体筛选、导入、去重、转写与持久化
-Sources/MyMemoExperience/    三步引导的数据和校验规则
+Sources/MyMemoExperience/    引导校验、录音查询和文字稿读取/索引
 Sources/MyMemoGuided/        SwiftUI 界面与设备监听
 Tests/                      核心与引导流程测试
 Resources/                  应用信息与图标
 scripts/                    构建与测试辅助脚本
 ```
 
-测试样例由程序生成，不包含用户真实录音。基于 macOS 的自动测试覆盖媒体筛选、复制完整性、去重、增量扫描、设备标识、断点恢复和引导校验。语音模型下载及真实云端请求不作为单元测试的一部分。
+测试样例由程序生成，不包含用户真实录音。46 项 macOS 自动测试覆盖媒体筛选、复制完整性、去重、增量扫描、设备标识、断点恢复、引导校验，以及排序、正文索引和文字稿缓存。合成数据界面验证见 [0.3.0 验证记录](docs/recording-browser-verification.md)。语音模型下载及真实云端请求不作为单元测试的一部分。
 
 项目采用 [MIT 许可证](LICENSE)，允许商用、修改和分发，需保留版权及许可证声明。欢迎提交 Issue 和 Pull Request，参见 [贡献说明](CONTRIBUTING.md)。第三方组件说明见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。

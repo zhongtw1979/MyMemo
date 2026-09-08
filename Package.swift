@@ -7,7 +7,7 @@ let package = Package(
     products: [.executable(name: "MyMemoGuided", targets: ["MyMemoGuided"])],
     targets: [
         .target(name: "MyMemoCore"),
-        .target(name: "MyMemoExperience", dependencies: ["MyMemoCore"]),
+        .target(name: "MyMemoExperience", dependencies: ["MyMemoCore"], linkerSettings: [.linkedLibrary("sqlite3")]),
         .executableTarget(name: "MyMemoGuided", dependencies: ["MyMemoCore", "MyMemoExperience"]),
         .testTarget(name: "MyMemoCoreTests", dependencies: ["MyMemoCore"], resources: [.copy("Fixtures")]),
         .testTarget(name: "MyMemoExperienceTests", dependencies: ["MyMemoExperience", "MyMemoCore"])

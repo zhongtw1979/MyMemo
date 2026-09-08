@@ -69,6 +69,7 @@ struct GuidedRootView: View {
 private struct HomeView: View {
     @ObservedObject var model: AppModel
     private var heroTitle: String {
+        if model.loadingLibrary { return "正在读取录音清单" }
         if model.busy { return "正在整理你的录音" }
         if model.paused { return "需要时，继续整理就好" }
         if let result = model.lastImport, result.failed > 0 { return "有些录音还没保存成功" }
@@ -81,6 +82,7 @@ private struct HomeView: View {
         return "设备已连接，可以整理录音了"
     }
     private var heroDetail: String {
+        if model.loadingLibrary { return "清单载入后即可查看已有文字稿，无需等待音频扫描。" }
         if model.busy { return model.activity }
         if model.paused { return "已经保存的录音会保留。点击继续后，按当前设置接着处理。" }
         if let result = model.lastImport, result.failed > 0 { return "这次有 \(result.failed) 个文件未能保存。可以查看运行记录，重新连接后再检查。" }

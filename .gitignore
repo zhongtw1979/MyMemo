@@ -9,6 +9,9 @@ xcuserdata/
 *.xcuserstate
 __pycache__/
 *.pyc
+*.sqlite3
+*.sqlite3-wal
+*.sqlite3-shm
 .env
 .env.*
 *.p12
@@ -20,6 +23,7 @@ __pycache__/
 *.provisionprofile
 config.json
 experience.json
+browser.json
 library.json
 library-before-*.json
 recordings/

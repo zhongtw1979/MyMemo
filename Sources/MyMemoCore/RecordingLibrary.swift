@@ -14,7 +14,9 @@ public actor RecordingLibrary {
                 guard loaded.version == 1, Set(loaded.jobs.map(\.id)).count == loaded.jobs.count else {
                     throw MemoError("记录版本或任务编号有误。")
                 }
+                var recovered = false
                 for i in loaded.jobs.indices where loaded.jobs[i].status == .transcribing {
+                    recovered = true
                     if loaded.jobs[i].requestProvider == .volcengine {
                         loaded.jobs[i].status = .failed
                         loaded.jobs[i].lastError = "上次云端转写中断，服务端可能已经计费。请确认后手动重试。"
@@ -24,7 +26,7 @@ public actor RecordingLibrary {
                     }
                 }
                 self.state = loaded
-                try Persistence.write(loaded, to: stateURL)
+                if recovered { try Persistence.write(loaded, to: stateURL) }
             } catch { throw MemoError("无法读取录音记录，已保留原文件：\(stateURL.path)\n\(error.localizedDescription)") }
         } else { state = LibrarySnapshot() }
     }
