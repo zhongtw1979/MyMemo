@@ -1,5 +1,11 @@
 # MyMemo
 
+## 专栏入口 / Column
+
+《FDE进入企业的全流程》合集会员（爱发电）：https://afdian.com/a/zhongtianwei
+
+写给愿意自己下场把 AI 落到业务里的老板与业务负责人。不做一键暴富课。
+
 **录音笔接入 Mac，自动保存录音，并在本机生成中文文字稿。**
 
 MyMemo is a native macOS app for importing recordings from selected devices, detecting new or changed files, and transcribing audio on the Mac.
